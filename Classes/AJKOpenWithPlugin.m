@@ -162,7 +162,13 @@ NSString * const AJKShortcutDictionary = @"AJKShortcutDictionary";
 	NSLog(@"AJKOpenWithPlugin urlToOpen: %@", urlToOpen);
 	if(urlToOpen && [applicationIdentifier length]) {
 		// Handle special cases
-		if([applicationIdentifier isEqualToString:@"com.fournova.Tower2"]) {
+		if ([applicationIdentifier rangeOfString:@"Emacs"].location != NSNotFound) {
+			// Open the current file in Cocoa Emacs (not duplicate Emacs Application)
+			NSTask *task = [[NSTask alloc] init];
+			[task setLaunchPath:@"/usr/bin/open"];
+			[task setArguments:@[@"-a", @"Emacs", urlToOpen.absoluteString]];
+			[task launch];
+		} else if([applicationIdentifier isEqualToString:@"com.fournova.Tower2"]) {
 			// Tower (at least the second version) doesn't seem to handle NSWorkspace…openURLs
 			NSTask *task = [[NSTask alloc] init];
 			[task setCurrentDirectoryPath:urlToOpen.path];
